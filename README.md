@@ -14,8 +14,8 @@ In most cases, the only changes needed to add full REST API to an existing Djang
 
 ## Installation
 
-* Download and add `django-dynamicresponse` to your `PYTHONPATH`
-* Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
+1) Download and add `django-dynamicresponse` to your `PYTHONPATH`
+2) Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
     MIDDLEWARE_CLASSES = (
         'dynamicresponse.middleware.api.APIMiddleware',
