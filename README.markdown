@@ -17,12 +17,10 @@ In most cases, the only changes needed to add full REST API to an existing Djang
 * Download and add `django-dynamicresponse` to your `PYTHONPATH`
 * Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
-```
-MIDDLEWARE_CLASSES = (
-    'dynamicresponse.middleware.api.APIMiddleware',
-    'dynamicresponse.middleware.dynamicformat.DynamicFormatMiddleware',
-)
-```
+	MIDDLEWARE_CLASSES = (
+	    'dynamicresponse.middleware.api.APIMiddleware',
+	    'dynamicresponse.middleware.dynamicformat.DynamicFormatMiddleware',
+	)
 
 `APIMiddleware` detects incoming API requests based on HTTP headers and provides support for Basic authentication.
 
@@ -38,14 +36,12 @@ from dynamicresponse.response import *
 
 Return an instance of the appropriate response class depending on your view logic:
 
-```
-@login_required
-def customer_list(request):
-    """Lists all customers."""
+	@login_required
+	def customer_list(request):
+	    """Lists all customers."""
     
-    customers = Customer.objects.all()
-    return SerializeOrRender('customers/list.html', { 'customers': customers })
-```
+	    customers = Customer.objects.all()
+	    return SerializeOrRender('customers/list.html', { 'customers': customers })
 
 The framework provides two response classes; `SerializeOrRender` and `SerializeOrRedirect`.
 
@@ -55,14 +51,12 @@ To implement REST API, you simply use `SerializeOrRender` in situations where yo
 
 For API requests, the second argument of the constructor is the context to be serialized for API requests. When rendering templates, it is often useful to pass additional context (such as forms and paginators) that is only useful when rendering the template, even though they are not relevant for API requests. The `SerializeOrRender` class supports additional context via a third argument, `extra`:
 
-```
-@login_required
-def customer_list(request):
-    """Lists all customers."""
+	@login_required
+	def customer_list(request):
+	    """Lists all customers."""
     
-    customers = Customer.objects.all()
-    return SerializeOrRender('customers/list.html', { 'customers': customers }, extra={ 'somevalue': 'something' })
-```
+	    customers = Customer.objects.all()
+	    return SerializeOrRender('customers/list.html', { 'customers': customers }, extra={ 'somevalue': 'something' })
 
 In this case, only `customers` are serialized in API responses, while both `customers` and `somevalue` is accessible when the template is rendered for normal requests.
 
