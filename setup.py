@@ -20,7 +20,7 @@ setup(name='django-dynamicresponse',
       author='Funkbit AS',
       author_email='post@funkbit.no',
       url='http://github.com/funkbit/django-dynamicresponse',
-      packages=['dynamicresponse'],
+      packages=['dynamicresponse', 'dynamicresponse.middleware'],
       license='BSD',
       classifiers = (
         "Development Status :: 4 - Beta",
