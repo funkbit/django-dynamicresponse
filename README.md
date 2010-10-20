@@ -29,7 +29,7 @@ Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
 ## Usage
 
-Import the dynamicresponse library in the views you want to use it:
+Import `dynamicresponse` in the views you want to use it:
 
 ```
 from dynamicresponse.response import *
@@ -46,9 +46,9 @@ Return an instance of the appropriate response class depending on your view logi
 
 The framework provides two response classes; `SerializeOrRender` and `SerializeOrRedirect`.
 
-As the names imply, these response classes serializes the supplied context as JSON for API requests, and renders a template or redirects to a URL for normal requests. The first argument of both classes specifies the template to be rendered or the URL to redirect the user to.
+As the names imply, these response classes serialize the supplied context as JSON for API requests, and renders a template or redirects to a URL for normal requests. The first argument of both classes specifies the template to be rendered or the URL to redirect the user to.
 
-To implement REST API, you simply use `SerializeOrRender` in situations where you would typically use `render_to_response`, and `SerializeOrRedirect` in cases where you would otherwise return an `HttpResponseRedirect` instance.
+To implement a REST API, you simply use `SerializeOrRender` in situations where you would typically use `render_to_response`, and `SerializeOrRedirect` in cases where you would otherwise return an `HttpResponseRedirect` instance.
 
 For API requests, the second argument of the constructor is the context to be serialized for API requests. When rendering templates, it is often useful to pass additional context (such as forms and paginators) that is only useful when rendering the template, even though they are not relevant for API requests. The `SerializeOrRender` class supports additional context via a third argument, `extra`:
 
@@ -70,27 +70,27 @@ Content is normally returned as JSON with HTTP status code `200`. If you want to
         <th style="text-align: left">Description</th>
     </tr>
     <tr>
-        <td>CR_OK</td>
+        <td><code>CR_OK</code></td>
         <td><code>200</code></td>
         <td>Default status</td>
     </tr>
     <tr>
-        <td>CR_INVALID_DATA</td>
+        <td><code>CR_INVALID_DATA</code></td>
         <td><code>402</code></td>
         <td>One or more forms are invalid</td>
     </tr>
     <tr>
-        <td>CR_NOT_FOUND</td>
+        <td><code>CR_NOT_FOUND</code></td>
         <td><code>404</code></td>
         <td>Not found (optional alternative to <code>HttpResponseNotFound</code> for consistency)</td>
     </tr>
     <tr>
-        <td>CR_CONFIRM</td>
+        <td><code>CR_CONFIRM</code></td>
         <td><code>405</code></td>
         <td>Confirm action with HTTP POST (use with <code>SerializeOrRender</code> with confirmation template)</td>
     </tr>
     <tr>
-        <td>CR_DELETED</td>
+        <td><code>CR_DELETED</code></td>
         <td><code>204</code></td>
         <td>The resource has been deleted</td>
     </tr>
@@ -98,6 +98,4 @@ Content is normally returned as JSON with HTTP status code `200`. If you want to
 
 You can add custom status values by defining them as a tuple consisting of a string constant and the HTTP status code to return:
 
-```
-CR_REQUIRES_UPGRADE = ('REQUIRES_UPGRADE', 402)
-```
+	CR_REQUIRES_UPGRADE = ('REQUIRES_UPGRADE', 402)
