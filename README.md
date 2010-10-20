@@ -65,9 +65,9 @@ Content is normally returned as JSON with HTTP status code `200`. If you want to
 
 <table>
     <tr>
-        <th style="text-align: left">Constant</th>
-        <th style="text-align: left">HTTP status</th>
-        <th style="text-align: left">Description</th>
+        <th align="left">Constant</th>
+        <th align="left">HTTP status</th>
+        <th align="left">Description</th>
     </tr>
     <tr>
         <td><code>CR_OK</code></td>
