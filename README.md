@@ -1,8 +1,8 @@
 # django-dynamicresponse
 
-django-dynamicresponse is a lightweight framework for providing REST API's for Django applications.
+django-dynamicresponse is a lightweight framework for easily providing REST API's for Django applications.
 
-The framework is intentially very lightweight and minimalistic, and is designed to interoperate with existing Django code, such as form validation, without major changes.
+The framework is intentionally very lightweight and minimalistic, and is designed to interoperate with existing Django code (such as form validation), without major changes.
 
 In most cases, the only changes needed to add full REST API to an existing Django application is modifying the return statements in your views to return one of the response classes described below instead of a standard Django `HttpResponse`.
 
