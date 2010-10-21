@@ -219,7 +219,8 @@ class Emitter(object):
                 add_ons = [k for k in dir(data) if k not in fields]
                 
                 for k in add_ons:
-                    ret[k] = _any(getattr(data, k))
+                    if not k.startswith('_'):
+                        ret[k] = _any(getattr(data, k))
             
             return ret
         
