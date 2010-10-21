@@ -34,6 +34,8 @@ Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
 ## Usage
 
+See the included [sample project](http://github.com/funkbit/django-dynamicresponse/tree/master/examples/) for sample code using the framework to implement a simple blog application.
+
 Import `dynamicresponse` in the views you want to use it:
 
 ```
