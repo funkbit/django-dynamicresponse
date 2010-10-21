@@ -138,11 +138,13 @@ class Emitter(object):
             ret = { }
             handler=None
             
-            # Does the model implement get_serialization_fields()?
+            # Does the model implement get_serialization_fields() or serialize_fields()?
             # We should only serialize these fields.
             if hasattr(data, 'get_serialization_fields'):
                 fields = set(data.get_serialization_fields())
-
+            if hasattr(data, 'serialize_fields'):
+                fields = set(data.serialize_fields())
+                    
             # Is the model a user instance?
             # Ensure that only core (non-sensitive fields) are serialized
             if isinstance(data, User):

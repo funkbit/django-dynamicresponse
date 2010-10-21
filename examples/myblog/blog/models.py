@@ -13,11 +13,11 @@ class BlogPost(models.Model):
     def __unicode__(self):        
         return self.title
 
-    def get_serialization_fields(self):
+    def serialize_fields(self):
         """Only these fields will be included in API responses."""
         
         return [
             'id',
             'title',
-            'text',
+            'content',
         ]
