@@ -66,6 +66,8 @@ For API requests, the second argument of the constructor is the context to be se
 
 In this case, only `customers` are serialized in API responses, while both `customers` and `somevalue` is accessible when the template is rendered for normal requests.
 
+### Status codes
+
 Content is normally returned as JSON with HTTP status code `200`. If you want to return a different status code, set the `status` argument to one of the following values:
 
 <table>
@@ -104,3 +106,25 @@ Content is normally returned as JSON with HTTP status code `200`. If you want to
 You can add custom status values by defining them as a tuple consisting of a string constant and the HTTP status code to return:
 
 	CR_REQUIRES_UPGRADE = ('REQUIRES_UPGRADE', 402)
+
+### Customizing serialization
+
+By default, all fields not starting with an underscore (<code>_</code>) on the models will be serialized when returning a JSON response for API requests.
+
+You can override this behavior by explicitly defining what fields to include by adding a <code>serialize_fields</code> method to your models:
+
+	class BlogPost(models.Model):
+
+	    title = models.CharField('Title', max_length=255)
+	    text = models.TextField('Text')
+
+	    def serialize_fields(self):
+	        """Only these fields will be included in API responses."""
+        
+	        return [
+	            'id',
+	            'title',
+	            'content',
+	        ]
+
+This behavior also extends to nested objects. For instance, if the model above had included a foreign key to an author, only the fields defined in the author's <code>serialize_fields</code> method would have been included.
