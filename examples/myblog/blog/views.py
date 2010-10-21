@@ -9,17 +9,13 @@ from forms import *
 from models import *
 
 def list_posts(request):
-    """
-    Lists all blog post.
-    """
+    """Lists all blog post."""
     
     posts = BlogPost.objects.all()
     return SerializeOrRender('blog/list_posts.html', { 'posts': posts })
 
 def post(request, post_id=None):
-    """
-    Displays, creates or updates a blog post.
-    """
+    """Displays, creates or updates a blog post."""
     
     post = None
     if post_id:
@@ -39,9 +35,7 @@ def post(request, post_id=None):
     return SerializeOrRender('blog/post.html', { 'post': post }, extra={ 'form': form })
     
 def delete_post(request, post_id):
-    """
-    Deletes the blog post.
-    """
+    """Deletes the blog post."""
     
     post = get_object_or_404(BlogPost.objects.all(), pk=post_id)
     

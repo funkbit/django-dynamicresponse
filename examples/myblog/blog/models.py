@@ -1,9 +1,7 @@
 from django.db import models
 
 class BlogPost(models.Model):
-    """
-    Simple blog post model for demo purposes.
-    """
+    """Simple blog post model for demo purposes."""
     
     title = models.CharField('Title', max_length=255)
     text = models.TextField('Text')
@@ -14,3 +12,12 @@ class BlogPost(models.Model):
 
     def __unicode__(self):        
         return self.title
+
+    def get_serialization_fields(self):
+        """Only these fields will be included in API responses."""
+        
+        return [
+            'id',
+            'title',
+            'text',
+        ]
