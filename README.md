@@ -9,6 +9,7 @@ In most cases, the only changes needed to add full REST API to an existing Djang
 ## Features
 
 * Easy integration with existing code
+* Reuse same views and logic for both API and normal requests (no need for separate API handlers)
 * Decodes submitted JSON into `request.POST`, fully compatible with Django forms
 * Built-in support for HTTP Basic authentication
 
