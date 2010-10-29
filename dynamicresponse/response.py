@@ -6,7 +6,7 @@ from django.template import RequestContext
 from dynamicresponse.json_response import JsonResponse
 
 CR_OK = ('OK', 200)
-CR_INVALID_DATA = ('INVALID', 402)
+CR_INVALID_DATA = ('INVALID', 400)
 CR_NOT_FOUND = ('NOT_FOUND', 404)
 CR_CONFIRM = ('CONFIRM', 405)
 CR_DELETED = ('DELETED', 204)
