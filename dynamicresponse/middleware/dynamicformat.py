@@ -39,19 +39,21 @@ class DynamicFormatMiddleware:
         """
         
         # Does the request contain a JSON payload?
-        content_length = int(request.META.get('CONTENT_LENGTH', 0))
         content_type = request.META.get('CONTENT_TYPE', '')
-        if content_length > 0 and content_type != '' and content_type in ('application/json'):
+        if content_type != '' and content_type in ('application/json'):
 
-            try:
-                # Replace request.POST with flattened dictionary from JSON
-                decoded_dict = simplejson.loads(request.raw_post_data)
-                request.POST = request.POST.copy()
-                request.POST.clear()
-                for key, val in self._flatten_dict(decoded_dict).items():
-                    request.POST[key] = val
-            except:
-                return HttpResponse('Invalid JSON', status=400)
+            # Ignore empty payloads (e.g. for deletes)
+            content_length = int(request.META.get('CONTENT_LENGTH', 0))
+            if context_lenght > 0:
+                try:
+                    # Replace request.POST with flattened dictionary from JSON
+                    decoded_dict = simplejson.loads(request.raw_post_data)
+                    request.POST = request.POST.copy()
+                    request.POST.clear()
+                    for key, val in self._flatten_dict(decoded_dict).items():
+                        request.POST[key] = val
+                except:
+                    return HttpResponse('Invalid JSON', status=400)
             
     def process_response(self, request, response):
         """
