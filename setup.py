@@ -14,7 +14,7 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 setup(name='django-dynamicresponse',
-      version='0.1',
+      version='0.1.1',
       description='Lightweight framework for easily providing REST APIs for web apps built with Django.',
       long_description=open('README.md').read(),
       author='Funkbit AS',
