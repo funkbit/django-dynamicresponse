@@ -44,7 +44,7 @@ class DynamicFormatMiddleware:
 
             # Ignore empty payloads (e.g. for deletes)
             content_length = int(request.META.get('CONTENT_LENGTH', 0))
-            if context_lenght > 0:
+            if content_length > 0:
                 try:
                     # Replace request.POST with flattened dictionary from JSON
                     decoded_dict = simplejson.loads(request.raw_post_data)
