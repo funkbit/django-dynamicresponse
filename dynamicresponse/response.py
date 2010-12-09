@@ -81,3 +81,17 @@ class SerializeOrRedirect(DynamicResponse):
             return self.serialize()
         else:
             return HttpResponseRedirect(self.url)
+
+class Serialize(DynamicResponse):
+    """
+    Serializes the context as JSON for both API and normal requests.
+    Useful for AJAX-only type views.
+    """
+    
+    def __init__(self, context={}, **kwargs):
+
+        super(Serialize, self).__init__(context, **kwargs)
+
+    def render_response(self, request, response):
+
+        return self.serialize()
