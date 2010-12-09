@@ -43,7 +43,9 @@ class DynamicFormatMiddleware:
         if content_type != '' and content_type in ('application/json'):
 
             # Ignore empty payloads (e.g. for deletes)
-            content_length = int(request.META.get('CONTENT_LENGTH', 0))
+            content_length = 0
+            if request.META.get('CONTENT_LENGTH', '') != '':
+                content_length = int(request.META.get('CONTENT_LENGTH', 0))
             if content_length > 0:
                 try:
                     # Replace request.POST with flattened dictionary from JSON
