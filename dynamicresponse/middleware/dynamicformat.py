@@ -39,7 +39,7 @@ class DynamicFormatMiddleware:
         """
         
         # Does the request contain a JSON payload?
-        content_length = request.META.get('CONTENT_LENGTH', 0)
+        content_length = int(request.META.get('CONTENT_LENGTH', 0))
         content_type = request.META.get('CONTENT_TYPE', '')
         if content_length > 0 and content_type != '' and content_type in ('application/json'):
 
