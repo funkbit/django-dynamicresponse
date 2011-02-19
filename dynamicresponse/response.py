@@ -34,7 +34,7 @@ class DynamicResponse(object):
             return JsonResponse(self.context)
         else:
             return HttpResponse(status=status_code)
-
+        
     def full_context(self):
         """
         Returns context and extra context combined into a single dictionary.
@@ -60,10 +60,16 @@ class SerializeOrRender(DynamicResponse):
     def render_response(self, request, response):
             
         if request.is_api:
-            return self.serialize()
+            res = self.serialize()
         else:
-            return render_to_response(self.template, self.full_context(), RequestContext(request))
+            res = render_to_response(self.template, self.full_context(), RequestContext(request))
 
+        if hasattr(self, 'extra_headers'):
+            for header in self.extra_headers:
+                res[header] = self.extra_headers[header]
+        
+        return res
+        
 class SerializeOrRedirect(DynamicResponse):
     """
     For normal requests, the user is redirected to the specified location.
@@ -78,9 +84,15 @@ class SerializeOrRedirect(DynamicResponse):
     def render_response(self, request, response):
         
         if request.is_api:
-            return self.serialize()
+            res = self.serialize()
         else:
-            return HttpResponseRedirect(self.url)
+            res = HttpResponseRedirect(self.url)
+
+        if hasattr(self, 'extra_headers'):
+            for header in self.extra_headers:
+                res[header] = self.extra_headers[header]
+
+        return res
 
 class Serialize(DynamicResponse):
     """
@@ -94,4 +106,10 @@ class Serialize(DynamicResponse):
 
     def render_response(self, request, response):
 
-        return self.serialize()
+        res = self.serialize()
+        
+        if hasattr(self, 'extra_headers'):
+            for header in self.extra_headers:
+                res[header] = self.extra_headers[header]
+        
+        return res
