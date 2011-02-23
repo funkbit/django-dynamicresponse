@@ -1,9 +1,10 @@
+from django.conf import settings
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 class APIMiddleware:
     """
-    Detects API requests based on request headers, and provides Basic authentication.
+    Detects API requests and provides support for Basic authentication.
     """
     
     api_accept_types = [
@@ -11,44 +12,68 @@ class APIMiddleware:
     ]
     
     def process_request(self, request):
+        
+        # Check if request is API
+        self._detect_api_request(request)
+        
+        # Should we authenticate based on headers?
+        if self._should_authorize(request):
+            if not self._perform_basic_auth(request):
+                return self._require_authentication(request)
+        
+    def process_response(self, request, response):
+        
+        if not request.is_api:
+            return response
+            
+        # Convert redirect from login_required to HTTP 401
+        if isinstance(response, HttpResponseRedirect):
+            redirect_url = response.get('Location', '')
+            if redirect_url.startswith(settings.LOGIN_URL):
+                return self._require_authentication(request)
+        
+        return response
+        
+    def _detect_api_request(self, request):
         """
-        Checks if the request is an API request, and performs authentication.
+        Detects API request based on the HTTP Accept header.
+        If so, sets is_api on the request.
         """
         
-        self._find_request_type(request)
-        if not self._perform_basic_auth(request):
-        
-            # Request authentication if required
-            if request.is_api and not request.user.is_authenticated():   
-                response = HttpResponse(status=401)
-                response['WWW-Authenticate'] = 'Basic realm="%s"' % 'API'
-                return response
-                    
-    def _find_request_type(self, request):
-        """
-        Sets is_api on the request object to indicate an API request.
-        API requests are determined based on the HTTP Accept-header.
-        """
-
-        # Split HTTP Accept header
         request.is_api = False
         request.accepts = []
         if 'HTTP_ACCEPT' in request.META:
             request.accepts = [a.split(';')[0] for a in request.META['HTTP_ACCEPT'].split(',')]
 
-        # Is the request an API request?
         for accept_type in request.accepts:
             if accept_type in self.api_accept_types:
                 request.is_api = True
     
+    def _get_auth_string(self, request):
+        """
+        Returns the authorization string set in the request header.
+        """
+
+        return request.META.get('Authorization', None) or request.META.get('HTTP_AUTHORIZATION', None)
+    
+    def _should_authorize(self, request):
+        """
+        Returns true if the request is an unauthenticated API request,
+        already containing HTTP authorization headers.
+        """
+        
+        if (not request.is_api) or (request.user.is_authenticated()):
+            return False
+        else:
+            return self._get_auth_string(request) != None
+
     def _perform_basic_auth(self, request):
         """"
         Logs in user specified with credentials provided by HTTP authentication.
         """
 
         # Get credentials from authorization header
-        auth_string = request.META.get('Authorization', None) or \
-            request.META.get('HTTP_AUTHORIZATION', None)
+        auth_string = self._get_auth_string(request)
         if not auth_string:
             return False
 
@@ -66,3 +91,13 @@ class APIMiddleware:
             return True
         else:
             return False
+
+    def _require_authentication(self, request):
+        """
+        Returns a request for authentication.
+        """
+        
+        response = HttpResponse(status=401)
+        response['WWW-Authenticate'] = 'Basic realm="%s"' % 'API'
+        return response
+        
