@@ -23,7 +23,7 @@ class APIMiddleware:
         
     def process_response(self, request, response):
         
-        if not request.is_api:
+        if not getattr(request, 'is_api', False):
             return response
             
         # Convert redirect from login_required to HTTP 401
