@@ -199,7 +199,7 @@ class Emitter(object):
                         # using different names.
                         ret[maybe_field] = _any(met_fields[maybe_field](data))
 
-                    else:                    
+                    else:    
                         maybe = getattr(data, maybe_field, None)
                         if maybe:
                             if callable(maybe):
@@ -208,10 +208,7 @@ class Emitter(object):
                             else:
                                 ret[maybe_field] = _any(maybe)
                         else:
-                            handler_f = getattr(handler or self.handler, maybe_field, None)
-
-                            if handler_f:
-                                ret[maybe_field] = _any(handler_f(data))
+                            ret[maybe_field] = _any(maybe)
 
             else:
                 
@@ -273,6 +270,6 @@ class JSONEmitter(Emitter):
         indent = 0
         if settings.DEBUG:
             indent = 4
-
+        
         seria = simplejson.dumps(self.construct(), cls=DateTimeAwareJSONEncoder, ensure_ascii=False, indent=indent)
         return seria
