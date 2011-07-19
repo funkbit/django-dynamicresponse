@@ -44,6 +44,9 @@ class DynamicFormatMiddleware:
                 elif isinstance(value, dict):
                     encoded_dict[item_key] = value.get('id', value)
                 
+                #null -> None
+                elif value == None:
+                    encoded_dict[item_key] = None
                 # Other values are used directly
                 else:
                     encoded_dict[item_key] = unicode(value)
