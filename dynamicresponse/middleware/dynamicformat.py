@@ -61,7 +61,7 @@ class DynamicFormatMiddleware:
         
         # Does the request contain a JSON payload?
         content_type = request.META.get('CONTENT_TYPE', '')
-        if content_type != '' and content_type in ('application/json'):
+        if content_type != '' and 'application/json' in content_type:
 
             # Ignore empty payloads (e.g. for deletes)
             content_length = 0
