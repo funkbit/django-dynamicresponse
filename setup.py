@@ -9,8 +9,17 @@ def publish():
     """Publish to Pypi"""
     os.system("python setup.py sdist upload")
 
+def runtests():
+    """Runs unit-tests in myblog example project"""
+    newcwd = os.path.join(os.getcwd(), "examples/myblog")
+    os.chdir(newcwd)
+    os.system("python manage.py test")
+
 if sys.argv[-1] == "publish":
     publish()
+    sys.exit()
+elif sys.argv[-1] == "test":
+    runtests()
     sys.exit()
 
 setup(name='django-dynamicresponse',
