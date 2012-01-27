@@ -3,3 +3,4 @@ build
 MANIFEST
 dist
 examples/myblog/myblog
+.idea
