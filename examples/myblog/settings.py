@@ -1,4 +1,6 @@
 # Django settings for blog project.
+import sys
+sys.path.append("../../")
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
