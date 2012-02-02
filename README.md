@@ -32,6 +32,10 @@ Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
 `DynamicFormatMiddleware` decodes incoming JSON content into `request.POST`, as well as rendering appropriate responses based on the returned value from your views.
 
+## Tests
+
+Run unit-tests by running <code>python setup.py test</code>
+
 ## Usage
 
 See the included [sample project](http://github.com/funkbit/django-dynamicresponse/tree/master/examples/) for sample code using the framework to implement a simple blog application.
@@ -132,7 +136,3 @@ You can override this behavior by adding a <code>serialize_fields</code> method 
 This behavior also extends to nested objects. For instance, if the model above had included a foreign key to an author, only the fields defined in the author's <code>serialize_fields</code> method would have been included.
 
 By default, callables are not included in the serialization. However, you can include names of callables in <code>serialize_fields</code> to explicitly include them in the serialization. This can for instance be useful to provide API users with useful dynamically computed information.
-
-### Tests
-
-Run unit-tests by running <code>python setup.py test</code>
