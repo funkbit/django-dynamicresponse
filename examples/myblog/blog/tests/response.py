@@ -1,6 +1,6 @@
 import unittest
 
-from mock import Mock, patch
+from mock import Mock
 from dynamicresponse.response import *
 
 
@@ -41,3 +41,38 @@ class DynamicResponseTest (unittest.TestCase):
 
         for key, value in dynResWithExtra.full_context().items():
             self.assertTrue(testContext.get(key) == value or testExtraContext.get(key) == value)
+
+
+class SerializeOrRenderTest (unittest.TestCase):
+
+    def setUp(self):
+        self.sor = SerializeOrRender("invalidtemplate")
+        self.sor.serialize = Mock(return_value=HttpResponse())
+
+        self.request = Mock()
+
+
+    def test_is_instance_of_DynamicResponse(self):
+        self.assertTrue(isinstance(self.sor, DynamicResponse))
+
+    def test_render_response_calls_serialize_if_request_is_api_is_true(self):
+        self.request.is_api = Mock(return_value=True)
+
+        result = self.sor.render_response(self.request, "unused_variable")
+
+        self.assertTrue(self.sor.serialize.called)
+        self.assertTrue(isinstance(result, HttpResponse))
+
+    def test_render_response_calls_django_render_to_response_if_request_is_api_is_false(self):
+        self.request.is_api = Mock(return_value=False)
+
+        result = self.sor.render_response(self.request, "unused_variable")
+
+        self.assertTrue(isinstance(result, HttpResponse))
+
+    def test_render_response_attaches_selfs_extra_headers_to_return_element(self):
+        self.sor.extra_headers = { 'testh': 1, 'testh2': 2, 'testh3': 3 }
+        result = self.sor.render_response(self.request, "unused_variable")
+
+        for header in self.sor.extra_headers:
+            self.assertTrue(result.has_header(header))
