@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from django.http import HttpResponse, HttpResponseRedirect
 
 class APIMiddleware:
@@ -19,7 +19,7 @@ class APIMiddleware:
         # Should we authenticate based on headers?
         if self._should_authorize(request):
             if not self._perform_basic_auth(request):
-                return self._require_authentication(request)
+                return self._require_authentication()
         
     def process_response(self, request, response):
         
@@ -30,7 +30,7 @@ class APIMiddleware:
         if isinstance(response, HttpResponseRedirect):
             redirect_url = response.get('Location', '')
             if redirect_url.startswith(settings.LOGIN_URL):
-                return self._require_authentication(request)
+                return self._require_authentication()
         
         return response
         
@@ -65,7 +65,7 @@ class APIMiddleware:
         if (not request.is_api) or (request.user.is_authenticated()):
             return False
         else:
-            return self._get_auth_string(request) != None
+            return self._get_auth_string(request) is not None
 
     def _perform_basic_auth(self, request):
         """"
@@ -92,7 +92,7 @@ class APIMiddleware:
         else:
             return False
 
-    def _require_authentication(self, request):
+    def _require_authentication(self):
         """
         Returns a request for authentication.
         """
@@ -100,4 +100,3 @@ class APIMiddleware:
         response = HttpResponse(status=401)
         response['WWW-Authenticate'] = 'Basic realm="%s"' % 'API'
         return response
-        
