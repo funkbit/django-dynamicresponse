@@ -18,7 +18,7 @@ class ConstantTest (unittest.TestCase):
 
 class DynamicResponseTest (unittest.TestCase):
 
-    def test_serialize_returns_JsonResponse_when_status_is_200(self):
+    def testSerializeReturnsJsonResponseWhenStatusIs200(self):
         dynRes = DynamicResponse()
         serialize_result = dynRes.serialize()
 
@@ -26,7 +26,7 @@ class DynamicResponseTest (unittest.TestCase):
         self.assertTrue(isinstance(serialize_result, HttpResponse))
         self.assertTrue(serialize_result.status_code == 200)
 
-    def test_serialize_returns_HttpResponse_when_status_is_not_200(self):
+    def testSerializeReturnsHttpResponseWhenStatusIsNot200(self):
         dynRes = DynamicResponse(status=CR_DELETED)
         serialize_result = dynRes.serialize()
 
@@ -42,7 +42,7 @@ class DynamicResponseTest (unittest.TestCase):
         self.assertTrue(isinstance(serialize_result, HttpResponse))
         self.assertTrue(serialize_result.status_code == 405)
 
-    def test_full_context_returns_context_merged_with_extra_context(self):
+    def testFullContextReturnsContextMergedWithExtraContext(self):
         testContext = {"testNum": 5, "word": "bird", "beach": 10}
         testExtraContext = {"extra": True, "blue?": False}
         dynResNoExtra = DynamicResponse(testContext)
@@ -64,10 +64,10 @@ class SerializeOrRenderTest (unittest.TestCase):
         self.request = Mock()
 
 
-    def test_is_instance_of_DynamicResponse(self):
+    def testIsInstanceOfDynamicResponse(self):
         self.assertTrue(isinstance(self.sor, DynamicResponse))
 
-    def test_render_response_calls_serialize_if_request_is_api_is_true(self):
+    def testRenderResponseCallsSerializeIfRequestIsApiIsTrue(self):
         self.request.is_api = True
 
         result = self.sor.render_response(self.request, "unused_variable")
@@ -75,7 +75,7 @@ class SerializeOrRenderTest (unittest.TestCase):
         self.assertTrue(self.sor.serialize.called)
         self.assertTrue(isinstance(result, HttpResponse))
 
-    def test_render_response_calls_django_render_to_response_if_request_is_api_is_false(self):
+    def testRenderResponseCallsDjangoRenderToResponseIfRequestIsApiIsFalse(self):
         self.request.is_api = False
         tried_rendering_template = False
 
@@ -87,7 +87,7 @@ class SerializeOrRenderTest (unittest.TestCase):
 
         self.assertTrue(tried_rendering_template)
 
-    def test_render_response_attaches_selfs_extra_headers_to_return_element(self):
+    def testRenderResponseAttachesSelfsExtraHeadersToReturnElement(self):
         self.sor.extra_headers = { 'testh': 1, 'testh2': 2, 'testh3': 3 }
         result = self.sor.render_response(self.request, "unused_variable")
 
@@ -104,10 +104,10 @@ class SerializeOrRedirectTest (unittest.TestCase):
         self.request = Mock()
 
 
-    def test_is_instance_of_DynamicResponse(self):
+    def testIsInstanceOfDynamicResponse(self):
         self.assertTrue(isinstance(self.sor, DynamicResponse))
 
-    def test_render_response_calls_serialize_if_request_is_api_is_true(self):
+    def testRenderResponseCallsSerializeIfRequestIsApiIsTrue(self):
         self.request.is_api = True
 
         result = self.sor.render_response(self.request, "unused_variable")
@@ -115,14 +115,14 @@ class SerializeOrRedirectTest (unittest.TestCase):
         self.assertTrue(self.sor.serialize.called)
         self.assertTrue(isinstance(result, HttpResponse))
 
-    def test_render_response_returns_HttpResponseRedirect_if_request_is_api_is_false(self):
+    def testRenderResponseReturnsHttpResponseRedirectIfRequestIsApiIsFalse(self):
         self.request.is_api = False
 
         result = self.sor.render_response(self.request, "unused_variable")
 
         self.assertTrue(isinstance(result, HttpResponseRedirect))
 
-    def test_render_response_attaches_selfs_extra_headers_to_return_element(self):
+    def testRenderResponseAttachesSelfsExtraHeadersToReturnElement(self):
         self.sor.extra_headers = { 'testh': 1, 'testh2': 2, 'testh3': 3 }
         result = self.sor.render_response(self.request, "unused_variable")
 
@@ -139,16 +139,16 @@ class SerializeTest (unittest.TestCase):
         self.request = Mock()
 
 
-    def test_is_instance_of_DynamicResponse(self):
+    def testIsInstanceOfDynamicResponse(self):
         self.assertTrue(isinstance(self.ser, DynamicResponse))
 
-    def test_render_response_calls_serialize(self):
+    def testRenderResponseCallsSerialize(self):
         result = self.ser.render_response(self.request, "unused_variable")
 
         self.assertTrue(self.ser.serialize.called)
         self.assertTrue(isinstance(result, HttpResponse))
 
-    def test_render_response_attaches_selfs_extra_headers_to_return_element(self):
+    def testRenderResponseAttachesSelfsExtraHeadersToReturnElement(self):
         self.ser.extra_headers = { 'testh': 1, 'testh2': 2, 'testh3': 3 }
         result = self.ser.render_response(self.request, "unused_variable")
 

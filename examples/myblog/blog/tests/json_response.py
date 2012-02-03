@@ -12,13 +12,13 @@ class JsonResponseTest (unittest.TestCase):
         self.jsonres = JsonResponse(self.testObj)
 
 
-    def test_is_instance_of_HttpResponse(self):
+    def testIsInstanceOfHttpResponse(self):
         self.assertTrue(isinstance(self.jsonres, HttpResponse))
 
-    def test_sets_correct_mimetype(self):
+    def testSetsCorrectMimetype(self):
         self.assertTrue(self.jsonres['Content-Type'] == 'application/json')
 
-    def test_converts_content_to_json(self):
+    def testConvertsContentToJson(self):
         compare_json = simplejson.loads(self.jsonres.content)
 
         for key, value in compare_json.items():
