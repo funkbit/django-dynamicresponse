@@ -22,7 +22,7 @@ class ApiTest (unittest.TestCase):
         self.api._require_authentication = Mock() # Prevent execution
 
         self.api.process_request(self.request)
-        self.assertTrue(self.api._detect_api_request.called)
+        self.assertTrue(self.api._detect_api_request.called, '_detect_api_request function was not called, thus is_api is not set')
 
     def testProcessRequestReturns401IfInvalidRequest(self):
         self.api._detect_api_request = Mock() # Prevent execution
@@ -47,19 +47,19 @@ class ApiTest (unittest.TestCase):
         response = HttpResponse()
 
         result = self.api.process_response(self.request, response)
-        self.assertTrue(result is response)
+        self.assertTrue(result is response, 'process_response should return the same response object')
 
         self.request.is_api = True
         result = self.api.process_response(self.request, response)
-        self.assertTrue(result is response)
+        self.assertTrue(result is response, 'process_response should return the same response object')
 
         response = HttpResponseRedirect('/invalid/url')
         result = self.api.process_response(self.request, response)
-        self.assertTrue(result is response)
+        self.assertTrue(result is response, 'process_response should return the same response object')
 
         response = HttpResponseRedirect(settings.LOGIN_URL)
         result = self.api.process_response(self.request, response)
-        self.assertTrue(result == 'req_auth')
+        self.assertEqual(result, 'req_auth')
 
     def testDetectApiRequestSetsApiTrueIfRequestAcceptsJson(self):
         self.request.is_api = False # Keeping pyLint happy
@@ -83,8 +83,8 @@ class ApiTest (unittest.TestCase):
         auth2.META['HTTP_AUTHORIZATION'] = 'teststring'
 
         self.assertTrue(self.api._get_auth_string(no_auth) is None)
-        self.assertTrue(self.api._get_auth_string(auth1) == 'teststring')
-        self.assertTrue(self.api._get_auth_string(auth2) == 'teststring')
+        self.assertEqual(self.api._get_auth_string(auth1), 'teststring')
+        self.assertEqual(self.api._get_auth_string(auth2), 'teststring')
 
     def testShouldAuthorizeReturnsTrueIfRequestNeedsAuthentication(self):
         self.api._get_auth_string = Mock(return_value="blabla")
@@ -109,6 +109,6 @@ class ApiTest (unittest.TestCase):
     def testRequireAuthenticationReturnsValidHttpResponse(self):
         response = self.api._require_authentication()
 
-        self.assertTrue(isinstance(response, HttpResponse))
+        self.assertTrue(isinstance(response, HttpResponse), 'Response should be an instance of HttpResponse')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response['WWW-Authenticate'], 'Basic realm="API"')
