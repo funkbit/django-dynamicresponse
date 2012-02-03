@@ -13,7 +13,7 @@ def runtests():
     """Runs unit-tests in myblog example project"""
     newcwd = os.path.join(os.getcwd(), "examples/myblog")
     os.chdir(newcwd)
-    os.system("python manage.py test")
+    os.system("python manage.py test blog")
 
 if sys.argv[-1] == "publish":
     publish()
