@@ -3,23 +3,14 @@
 import os
 import sys
 
-from distutils.core import setup
+from setuptools import setup
 
 def publish():
     """Publish to Pypi"""
     os.system("python setup.py sdist upload")
 
-def runtests():
-    """Runs unit-tests in myblog example project"""
-    newcwd = os.path.join(os.getcwd(), "examples/myblog")
-    os.chdir(newcwd)
-    os.system("python manage.py test blog")
-
 if sys.argv[-1] == "publish":
     publish()
-    sys.exit()
-elif sys.argv[-1] == "test":
-    runtests()
     sys.exit()
 
 setup(name='django-dynamicresponse',
@@ -30,6 +21,8 @@ setup(name='django-dynamicresponse',
       author_email='post@funkbit.no',
       url='http://github.com/funkbit/django-dynamicresponse',
       packages=['dynamicresponse', 'dynamicresponse.middleware'],
+      tests_require=['django>=1.1,<1.4'],
+      test_suite='examples.myblog.blog.runtests.runtests',
       license='BSD',
       classifiers = (
         "Development Status :: 4 - Beta",
