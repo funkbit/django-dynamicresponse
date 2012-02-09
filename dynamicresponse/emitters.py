@@ -213,15 +213,16 @@ class Emitter(object):
             else:
                 
                 for f in data._meta.fields:
-                    ret[f.attname] = _any(getattr(data, f.attname))
-                
+                    if not f.attname.startswith('_'):
+                        ret[f.attname] = _any(getattr(data, f.attname))
+
                 fields = dir(data.__class__) + ret.keys()
                 add_ons = [k for k in dir(data) if k not in fields]
-                
+
                 for k in add_ons:
-                    if not k.startswith('_'):
+                    if not k.__str__().startswith('_'):
                         ret[k] = _any(getattr(data, k))
-            
+
             return ret
         
         def _qs(data, fields=()):
