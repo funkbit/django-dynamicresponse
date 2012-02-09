@@ -3,6 +3,7 @@
 import os
 import sys
 
+from dynamicresponse import __version__
 from setuptools import setup
 
 def publish():
@@ -14,7 +15,7 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 setup(name='django-dynamicresponse',
-      version='0.1.6',
+      version=__version__,
       description='Lightweight framework for easily providing REST APIs for web apps built with Django.',
       long_description=open('README.md').read(),
       author='Funkbit AS',
