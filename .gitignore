@@ -4,3 +4,4 @@ MANIFEST
 dist
 examples/myblog/myblog
 .idea
+django_dynamicresponse.egg*
