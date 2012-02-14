@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse
 
 from dynamicresponse.response import *
 
-from forms import *
-from models import *
+from forms import BlogPostForm
+from models import BlogPost
 
 def list_posts(request):
     """Lists all blog post."""
@@ -20,7 +20,7 @@ def post(request, post_id=None):
     post = None
     if post_id:
         post = get_object_or_404(BlogPost.objects.all(), pk=post_id)
-
+    
     if request.method == 'POST':
         
         form = BlogPostForm(request.POST, instance=post)
@@ -40,10 +40,8 @@ def delete_post(request, post_id):
     post = get_object_or_404(BlogPost.objects.all(), pk=post_id)
     
     if request.method == 'POST':
-
+        
         post.delete()
         return SerializeOrRedirect(reverse('list_posts'), {}, status=CR_DELETED)
     
-    else:
-        
-        return SerializeOrRender('blog/delete_post.html', { 'post': post }, status=CR_CONFIRM)
+    return SerializeOrRender('blog/delete_post.html', { 'post': post }, status=CR_CONFIRM)

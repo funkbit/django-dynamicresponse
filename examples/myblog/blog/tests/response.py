@@ -5,7 +5,7 @@ from django.template.base import TemplateDoesNotExist
 from dynamicresponse.response import *
 
 
-class ConstantTest (unittest.TestCase):
+class ConstantTest(unittest.TestCase):
 
     def test_constants(self):
         self.assertEqual(CR_OK, ('OK', 200))
@@ -16,7 +16,7 @@ class ConstantTest (unittest.TestCase):
         self.assertEqual(CR_REQUIRES_UPGRADE, ('REQUIRES_UPGRADE', 402))
 
 
-class DynamicResponseTest (unittest.TestCase):
+class DynamicResponseTest(unittest.TestCase):
 
     def testSerializeReturnsJsonResponseWhenStatusIs200(self):
         dynRes = DynamicResponse()
@@ -56,7 +56,7 @@ class DynamicResponseTest (unittest.TestCase):
                             'full_context apperantly did not merge context and extra_context')
 
 
-class SerializeOrRenderTest (unittest.TestCase):
+class SerializeOrRenderTest(unittest.TestCase):
 
     def setUp(self):
         self.sor = SerializeOrRender("invalidtemplate")
@@ -96,7 +96,7 @@ class SerializeOrRenderTest (unittest.TestCase):
             self.assertTrue(result.has_header(header), 'apperently did not merge extra_headers with headers')
 
 
-class SerializeOrRedirectTest (unittest.TestCase):
+class SerializeOrRedirectTest(unittest.TestCase):
 
     def setUp(self):
         self.sor = SerializeOrRedirect("invalidurl")
@@ -131,7 +131,7 @@ class SerializeOrRedirectTest (unittest.TestCase):
             self.assertTrue(result.has_header(header), 'apperently did not merge extra_headers with headers')
 
 
-class SerializeTest (unittest.TestCase):
+class SerializeTest(unittest.TestCase):
 
     def setUp(self):
         self.ser = Serialize()

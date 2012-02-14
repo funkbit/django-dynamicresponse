@@ -23,7 +23,7 @@ class modelWithoutSerializeFields(models.Model):
     _password = models.CharField('Password', max_length=100)
 
 
-class JsonResponseTest (unittest.TestCase):
+class JsonResponseTest(unittest.TestCase):
 
     def setUp(self):
         self.testObj = { 'testval': 99, 'testStr': 'Ice Cone', 'today': datetime(2012, 5, 17) }
