@@ -1,8 +1,8 @@
+*.egg*
 *.pyc
+.DS_Store
+.idea
 build
-MANIFEST
 dist
 examples/myblog/myblog
-.idea
-*.egg*
-.DS_Store
+MANIFEST
