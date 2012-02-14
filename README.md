@@ -89,7 +89,7 @@ Content is normally returned as JSON with HTTP status code `200`. If you want to
     </tr>
     <tr>
         <td><code>CR_INVALID_DATA</code></td>
-        <td><code>402</code></td>
+        <td><code>400</code></td>
         <td>One or more forms are invalid</td>
     </tr>
     <tr>
