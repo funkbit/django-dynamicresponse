@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Delete post</title>
-	</head>
-	<body>
+{% extends "base.html" %}
 
-		{% if post %}
-			<h1>Delete post</h1>
-		{% endif %}
+{% block title %}Delete post{% endblock %}
 
-		<p>
-			Are you sure you want to delete the post <strong>{{ post.title }}</strong>?
-		</p>
+{% block content %}
+	
+	<h1>
+		Delete post
+	</h1>
+	
+	<p>
+		Are you sure you want to delete the post <strong>{{ post.title }}</strong>?
+	</p>
+	
+	<form action="." method="post">
 		
-		<form action="." method="post">
-			
-			{% csrf_token %}
+		{% csrf_token %}
 		
-			<input type="submit" value="Delete">
-			or <a href="{% url list_posts %}">cancel</a>
-			
-		</form>
+		<input type="submit" value="Delete">
+		or <a href="{% url list_posts %}">cancel</a>
 		
-	</body>
-</html>
+	</form>
+{% endblock %}

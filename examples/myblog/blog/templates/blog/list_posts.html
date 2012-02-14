@@ -1,30 +1,26 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Blog posts</title>
-	</head>
-	<body>
+{% extends "base.html" %}
 
-		<h1>
-			Blog posts
-		</h1>
-		
-		<ul>
-		    {% for post in posts %}
-		        <li>
-					<a href="{% url post post_id=post.pk %}">{{ post.title }}</a>
-					(<a href="{% url delete_post post_id=post.pk %}">delete</a>)
-				</li>
-			{% empty %}
-				<li>
-					No posts yet!
-				</li>
-		    {% endfor %}
-		</ul>
+{% block title %}Blog posts{% endblock %}
 
-		<p>
-			<a href="{% url create_post %}">Create a new post</a>
-		</p>
-		
-	</body>
-</html>
+{% block content %}
+	<h1>
+		Blog posts
+	</h1>
+	
+	<ul>
+		{% for post in posts %}
+			<li>
+				<a href="{% url post post_id=post.pk %}">{{ post.title }}</a>
+				(<a href="{% url delete_post post_id=post.pk %}">delete</a>)
+			</li>
+		{% empty %}
+			<li>
+				No posts yet!
+			</li>
+	    {% endfor %}
+	</ul>
+
+	<p>
+		<a href="{% url create_post %}">Create a new post</a>
+	</p>
+{% endblock %}

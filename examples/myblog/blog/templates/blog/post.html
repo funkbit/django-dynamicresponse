@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>{{ post.title }}</title>
-	</head>
-	<body>
+{% extends "base.html" %}
 
-		{% if post %}
-			<h1>{{ post.title }}</h1>
-		{% else %}
-			<h1>New post</h1>
-		{% endif %}
+{% block title %}{% if post %}{{ post.title }}{% else %}New post{% endif %}{% endblock %}
 
-		<form action="." method="post">
-			
-			{% csrf_token %}
-			
-			{{ form.as_p }}
+{% block content %}
+	{% if post %}
+		<h1>{{ post.title }}</h1>
+	{% else %}
+		<h1>New post</h1>
+	{% endif %}
+	
+	<form action="." method="post">
 		
-			<input type="submit" value="Save">
-			
-		</form>
+		{% csrf_token %}
 		
-	</body>
-</html>
+		{{ form.as_p }}
+		
+		<input type="submit" value="Save">
+		
+	</form>
+{% endblock %}
