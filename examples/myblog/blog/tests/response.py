@@ -3,6 +3,7 @@ import unittest
 from mock import Mock
 from django.template.base import TemplateDoesNotExist
 from dynamicresponse.response import *
+from django.conf import settings
 
 
 class ConstantTest(unittest.TestCase):
@@ -25,6 +26,20 @@ class DynamicResponseTest(unittest.TestCase):
         self.assertTrue(isinstance(serialize_result, JsonResponse), 'Serialized result should be an instance of JsonResponse')
         self.assertTrue(isinstance(serialize_result, HttpResponse), 'Serialized result should be an instance of HttpResponse')
         self.assertEqual(serialize_result.status_code, 200)
+
+    def testSerializeReturnsJsonResponseWhenStatusIs400AndSettingsSpecifyErrorReporting(self):
+        dynRes = DynamicResponse(status=CR_INVALID_DATA)
+        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = False
+        serialize_result = dynRes.serialize()
+
+        self.assertFalse(isinstance(serialize_result, JsonResponse), 'Serialized result should not be a JsonResponse unless the correct setting is set')
+
+        dynRes = DynamicResponse(status=CR_INVALID_DATA)
+        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = True
+        serialize_result = dynRes.serialize()
+
+        self.assertTrue(isinstance(serialize_result, JsonResponse), 'Serialized result should be a JsonResponse with correct setting and status: 400')
+        self.assertEqual(serialize_result.status_code, 400)
 
     def testSerializeReturnsHttpResponseWhenStatusIsNot200(self):
         dynRes = DynamicResponse(status=CR_DELETED)

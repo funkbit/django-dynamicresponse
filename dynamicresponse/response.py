@@ -2,6 +2,7 @@ from django.forms import Form, ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.conf import settings
 
 from dynamicresponse.json_response import JsonResponse
 
@@ -16,7 +17,7 @@ class DynamicResponse(object):
     """
     Base class for dynamic responses.
     """
-    
+
     def __init__(self, context={}, **kwargs):
 
         self.context = context
@@ -32,6 +33,8 @@ class DynamicResponse(object):
         key, status_code = self.status
         if status_code == 200:
             return JsonResponse(self.context)
+        elif status_code == 400 and settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS:
+            return JsonResponse(self.context, status=400)
         else:
             return HttpResponse(status=status_code)
         
