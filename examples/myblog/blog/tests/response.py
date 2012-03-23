@@ -1,6 +1,8 @@
 import unittest
 
 from mock import Mock
+from django.utils import simplejson
+from django.forms import Form
 from django.template.base import TemplateDoesNotExist
 from dynamicresponse.response import *
 from django.conf import settings
@@ -40,6 +42,22 @@ class DynamicResponseTest(unittest.TestCase):
 
         self.assertTrue(isinstance(serialize_result, JsonResponse), 'Serialized result should be a JsonResponse with correct setting and status: 400')
         self.assertEqual(serialize_result.status_code, 400)
+
+    def testJsonResponseWithStatus400ReturnErrorsWhenSettingsSpecifyErrorReporting(self):
+        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = True
+        simple_form = Form()
+        simple_form.is_valid = Mock(return_value=False)
+        simple_form.errors[u'SimpleError'] = u'This was a very simple error, shame on you'
+        simple_form.errors[u'Error2'] = u'This was a bit more serious'
+
+        should_equal = simplejson.dumps([simple_form.errors])
+
+        dynRes = DynamicResponse({}, extra={ 'form': simple_form }, status=CR_INVALID_DATA)
+        serialized_result = dynRes.serialize()
+
+        self.assertTrue(isinstance(serialized_result, JsonResponse))
+        self.assertEqual(should_equal, serialized_result.content, 'Correct error message is not returned from JsonResponse')
+
 
     def testSerializeReturnsHttpResponseWhenStatusIsNot200(self):
         dynRes = DynamicResponse(status=CR_DELETED)

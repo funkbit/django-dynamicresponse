@@ -34,7 +34,14 @@ class DynamicResponse(object):
         if status_code == 200:
             return JsonResponse(self.context)
         elif status_code == 400 and settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS:
-            return JsonResponse(self.context, status=400)
+            errors = []
+
+            if hasattr(self, 'extra'):
+                for form in [value for key, value in self.extra.items() if isinstance(value, Form)]:
+                    if not form.is_valid():
+                        errors.append(form.errors)
+
+            return JsonResponse(errors, status=400)
         else:
             return HttpResponse(status=status_code)
         
