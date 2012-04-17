@@ -2,9 +2,10 @@ from datetime import datetime
 import unittest
 
 from django.db import models
+from django.http import HttpResponse
 from django.utils import simplejson
 
-from dynamicresponse.json_response import *
+from dynamicresponse.json_response import JsonResponse
 
 
 class modelWithSerializeFields(models.Model):
@@ -30,11 +31,11 @@ class JsonResponseTest(unittest.TestCase):
         self.testObj = { 'testval': 99, 'testStr': 'Ice Cone', 'today': datetime(2012, 5, 17) }
         self.jsonres = JsonResponse(self.testObj)
 
-        self.modelWithSerializeFields = JsonResponse(modelWithSerializeFields(title='Heroken',
+        self.modelWithSerializeFields = JsonResponse(modelWithSerializeFields(title='Hadouken',
                                                                             text='is said repeatedly in Street Fighter',
                                                                             _password='is secret'))
 
-        self.modelbaseWithoutSerializeFields = modelWithoutSerializeFields(title='Heroken',
+        self.modelbaseWithoutSerializeFields = modelWithoutSerializeFields(title='Hadouken',
                                                                         text='is said repeatedly in Street Fighter',
                                                                         _password='is secret')
 
@@ -58,21 +59,21 @@ class JsonResponseTest(unittest.TestCase):
             self.assertEqual(self.testObj.get(key).__str__(), value.__str__())
 
     def testModelWithSerializeFieldsConvertsToJson(self):
-        to_equal = { u'id': None, u'title': u'Heroken' }
+        to_equal = { u'id': None, u'title': u'Hadouken' }
         result = simplejson.loads(self.modelWithSerializeFields.content)
 
         for key, value in result.items():
             self.assertEqual(to_equal.get(key).__str__(), value.__str__())
 
     def testModelWithoutSerializeFieldsConvertsToJson(self):
-        to_equal = { u'text': u'is said repeatedly in Street Fighter', u'title': u'Heroken', u'id': None }
+        to_equal = { u'text': u'is said repeatedly in Street Fighter', u'title': u'Hadouken', u'id': None }
         result = simplejson.loads(self.modelWithoutSerializeFields.content)
 
         for key, value in result.items():
             self.assertEqual(to_equal.get(key).__str__(), value.__str__())
 
     def testModelsWithDynamiclyAddedFieldsConvertsToJson(self):
-        to_equal = { u'text': u'is said repeatedly in Street Fighter', u'title': u'Heroken', u'id': None, u'dummy': u'blah' }
+        to_equal = { u'text': u'is said repeatedly in Street Fighter', u'title': u'Hadouken', u'id': None, u'dummy': u'blah' }
 
         self.modelbaseWithoutSerializeFields.dummy = "blah"
         self.modelbaseWithoutSerializeFields._dummy = "blah"

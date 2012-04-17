@@ -1,10 +1,11 @@
 import unittest
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, QueryDict
 from django.utils.simplejson import loads, dumps
 from mock import Mock
 
-from dynamicresponse.middleware.dynamicformat import *
+from dynamicresponse.middleware.dynamicformat import DynamicFormatMiddleware
+from dynamicresponse.response import DynamicResponse
 
 
 class DynamicFormatTest(unittest.TestCase):

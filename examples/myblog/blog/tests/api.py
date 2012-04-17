@@ -1,11 +1,12 @@
 import unittest
 
+from django.conf import settings
 from django.contrib.auth.models import User
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.test import TestCase
 from mock import Mock
 
-from dynamicresponse.middleware.api import *
+from dynamicresponse.middleware.api import APIMiddleware
 
 
 class ApiTest(unittest.TestCase):
