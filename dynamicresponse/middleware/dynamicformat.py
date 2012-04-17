@@ -1,5 +1,5 @@
-from django.utils import simplejson
 from django.http import QueryDict
+from django.utils import simplejson
 
 from dynamicresponse.response import *
 

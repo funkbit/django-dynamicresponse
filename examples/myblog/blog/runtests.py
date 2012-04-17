@@ -1,6 +1,6 @@
 # This file mainly exists to allow python setup.py test to work.
 import os, sys
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../"))
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'myblog.settings'
 test_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, test_dir)

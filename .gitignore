@@ -2,7 +2,7 @@
 *.pyc
 .DS_Store
 .idea
-build
-dist
-examples/myblog/myblog
+build/
+dist/
+examples/myblog/myblog.db
 MANIFEST

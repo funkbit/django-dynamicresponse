@@ -1,8 +1,9 @@
-import unittest
 from datetime import datetime
+import unittest
 
 from django.db import models
 from django.utils import simplejson
+
 from dynamicresponse.json_response import *
 
 

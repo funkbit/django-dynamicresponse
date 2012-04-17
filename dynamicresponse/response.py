@@ -1,8 +1,8 @@
+from django.conf import settings
 from django.forms import Form, ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.conf import settings
 
 from dynamicresponse.json_response import JsonResponse
 
