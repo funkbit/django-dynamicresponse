@@ -1,15 +1,18 @@
 import unittest
 
+from django.contrib.auth.models import User
 from django.http import HttpRequest
+from django.test import TestCase
 from mock import Mock
+
 from dynamicresponse.middleware.api import *
 
 
 class ApiTest(unittest.TestCase):
     """
-    Note: No unit-test for _perform_basic_auth due to the difficulty of mocking django authenticate function.
+    Test basic API middleware operations.
     """
-
+    
     def setUp(self):
         self.api = APIMiddleware()
         self.request = HttpRequest()
@@ -130,3 +133,26 @@ class ApiTest(unittest.TestCase):
         request.META['Authorization'] = 'Basic %s' % credentials
         
         self.assertFalse(self.api._perform_basic_auth(request))
+
+class ApiLogInTests(TestCase):
+    """
+    Test log in of Django users via Basic auth.
+    """
+    
+    fixtures = ['test_data']
+    
+    def setUp(self):
+        self.api = APIMiddleware()
+    
+    def testBasicAuthentication(self):
+        """
+        Test that a user can log in with Basic auth.
+        """
+        
+        request = HttpRequest()
+        credentials = 'johndoe:foobar'.encode('base64')
+        request.META['Authorization'] = 'Basic %s' % credentials
+        
+        self.assertTrue(self.api._perform_basic_auth(request))
+        self.assertTrue(request.user.is_authenticated())
+        self.assertEquals(request.user, User.objects.get(id=1))
