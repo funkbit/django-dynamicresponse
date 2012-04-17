@@ -109,5 +109,5 @@ class APIMiddleware:
         """
         
         response = HttpResponse(status=401)
-        response['WWW-Authenticate'] = 'Basic realm="%s"' % 'API'
+        response['WWW-Authenticate'] = 'Basic realm="%s"' % getattr(settings, 'DYNAMICRESPONSE_BASIC_REALM_NAME', 'API')
         return response
