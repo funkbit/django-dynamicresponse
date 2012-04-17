@@ -5,7 +5,7 @@ from mock import Mock
 from dynamicresponse.middleware.api import *
 
 
-class ApiTest (unittest.TestCase):
+class ApiTest(unittest.TestCase):
     """
     Note: No unit-test for _perform_basic_auth due to the difficulty of mocking django authenticate function.
     """
@@ -112,3 +112,21 @@ class ApiTest (unittest.TestCase):
         self.assertTrue(isinstance(response, HttpResponse), 'Response should be an instance of HttpResponse')
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response['WWW-Authenticate'], 'Basic realm="API"')
+
+    def testInvalidBasicAuthStringResponse(self):
+        """
+        Ensure that invalid basic auth headers are treated correctly.
+        """
+        
+        # Test missing "Basic" opening keyword
+        request = HttpRequest()
+        request.META['Authorization'] = 'invalid_basic_auth_string'
+        
+        self.assertFalse(self.api._perform_basic_auth(request))
+        
+        # Test wrong formatting of credentials
+        request = HttpRequest()
+        credentials = 'username password'.encode('base64') # Missing colon separator
+        request.META['Authorization'] = 'Basic %s' % credentials
+        
+        self.assertFalse(self.api._perform_basic_auth(request))

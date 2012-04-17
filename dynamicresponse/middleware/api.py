@@ -76,22 +76,33 @@ class APIMiddleware:
         auth_string = self._get_auth_string(request)
         if not auth_string:
             return False
-
+        
+        # Try to parse the authorization method and credentials
+        try:
+            authmeth, auth = auth_string.split(' ', 1)
+        except ValueError:
+            authmeth, auth = '', None
+        
         # We only support Basic authentication
-        (authmeth, auth) = auth_string.split(" ", 1)
         if not authmeth.lower() == 'basic':
             return False
-
+        
         # Validate username and password
         auth = auth.strip().decode('base64')
-        (username, password) = auth.split(':', 1)
+        
+        # Try the parse the credentials separated with a colon
+        try:
+            username, password = auth.split(':', 1)
+        except ValueError:
+            return False
+        
         user = authenticate(username=username, password=password)
         if user is not None and user.is_active:
             request.user = user
             return True
         else:
             return False
-
+    
     def _require_authentication(self):
         """
         Returns a request for authentication.
