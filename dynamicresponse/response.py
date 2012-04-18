@@ -35,17 +35,33 @@ class DynamicResponse(object):
         if status_code == CR_OK[1]:
             return JsonResponse(self.context)
         
-        elif status_code == CR_INVALID_DATA[1] and getattr(settings, 'DYNAMICRESPONSE_JSON_FORM_ERRORS', False):
+        elif status_code == CR_INVALID_DATA[1]:
             
-            # Include form errors when return status is invalid
-            errors = []
-            
-            if hasattr(self, 'extra'):
+            # Output form errors when return status is invalid
+            if hasattr(self, 'extra') and getattr(settings, 'DYNAMICRESPONSE_JSON_FORM_ERRORS', False):
+                errors = {}
+                
                 for form in [value for key, value in self.extra.items() if isinstance(value, Form) or isinstance(value, ModelForm)]:
                     if not form.is_valid():
-                        errors.append(form.errors)
-            
-            return JsonResponse(errors, status=status_code)
+                        
+                        for key, val in form.errors.items():
+                            
+                            # Flatten field errors
+                            if isinstance(val, list):
+                                val = ' '.join(val)
+                            
+                            # Split general and field specific errors
+                            if key == '__all__':
+                                errors['general_errors'] = val
+                            else:
+                                
+                                # Field specific errors
+                                if not 'field_errors' in errors:
+                                    errors['field_errors'] = {}
+                                
+                                errors['field_errors'][key] = val
+                
+                return JsonResponse(errors, status=status_code)
         
         # Return blank response for all other status codes
         return HttpResponse(status=status_code)

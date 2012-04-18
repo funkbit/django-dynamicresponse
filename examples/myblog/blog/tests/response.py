@@ -29,12 +29,12 @@ class DynamicResponseTest(unittest.TestCase):
         self.assertTrue(isinstance(serialize_result, HttpResponse), 'Serialized result should be an instance of HttpResponse')
         self.assertEqual(serialize_result.status_code, 200)
 
-    def testSerializeReturnsJsonResponseWhenStatusIs400AndSettingsSpecifyErrorReporting(self):
+    def testSerializeReturnsHttpResponseWhenStatusIs400AndSettingsSpecifyErrorReportingAndNoErrors(self):
         dynRes = DynamicResponse(status=CR_INVALID_DATA)
         settings.DYNAMICRESPONSE_JSON_FORM_ERRORS = True
         serialize_result = dynRes.serialize()
 
-        self.assertTrue(isinstance(serialize_result, JsonResponse), 'Serialized result should be a JsonResponse with correct setting and status: 400')
+        self.assertTrue(isinstance(serialize_result, HttpResponse), 'Serialized result should be a HttpResponse with correct setting and status: 400')
         self.assertEqual(serialize_result.status_code, 400)
 
     def testJsonResponseWithStatus400ReturnErrorsWhenSettingsSpecifyErrorReporting(self):
@@ -44,7 +44,7 @@ class DynamicResponseTest(unittest.TestCase):
         simple_form.errors[u'SimpleError'] = u'This was a very simple error, shame on you'
         simple_form.errors[u'Error2'] = u'This was a bit more serious'
 
-        should_equal = simplejson.dumps([simple_form.errors], indent=0)
+        should_equal = simplejson.dumps({'field_errors': simple_form.errors}, indent=0)
 
         dynRes = DynamicResponse({}, extra={ 'form': simple_form }, status=CR_INVALID_DATA)
         serialized_result = dynRes.serialize()
