@@ -17,9 +17,9 @@ class DynamicResponse(object):
     """
     Base class for dynamic responses.
     """
-
+    
     def __init__(self, context={}, **kwargs):
-
+        
         self.context = context
         self.status = context.get('status', CR_OK)
         for arg in kwargs:
@@ -29,22 +29,27 @@ class DynamicResponse(object):
         """
         Serializes the context as JSON, or returns a HTTP response with corresponding status.
         """
-
+        
         key, status_code = self.status
-        if status_code == 200:
+        
+        if status_code == CR_OK[1]:
             return JsonResponse(self.context)
-        elif status_code == 400 and settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS:
+        
+        elif status_code == CR_INVALID_DATA[1] and getattr(settings, 'DYNAMICRESPONSE_JSON_FORM_ERRORS', False):
+            
+            # Include form errors when return status is invalid
             errors = []
-
+            
             if hasattr(self, 'extra'):
-                for form in [value for key, value in self.extra.items() if isinstance(value, Form)]:
+                for form in [value for key, value in self.extra.items() if isinstance(value, Form) or isinstance(value, ModelForm)]:
                     if not form.is_valid():
                         errors.append(form.errors)
-
-            return JsonResponse(errors, status=400)
-        else:
-            return HttpResponse(status=status_code)
+            
+            return JsonResponse(errors, status=status_code)
         
+        # Return blank response for all other status codes
+        return HttpResponse(status=status_code)
+    
     def full_context(self):
         """
         Returns context and extra context combined into a single dictionary.
@@ -61,47 +66,47 @@ class SerializeOrRender(DynamicResponse):
     For normal requests, the specified template is rendered.
     For API requests, the context is serialized and returned as JSON.
     """
-
+    
     def __init__(self, template, context={}, **kwargs):
         
         super(SerializeOrRender, self).__init__(context, **kwargs)
         self.template = template
-        
+    
     def render_response(self, request, response):
-            
+        
         if request.is_api:
             res = self.serialize()
         else:
             res = render_to_response(self.template, self.full_context(), RequestContext(request))
-
+        
         if hasattr(self, 'extra_headers'):
             for header in self.extra_headers:
                 res[header] = self.extra_headers[header]
         
         return res
-        
+
 class SerializeOrRedirect(DynamicResponse):
     """
     For normal requests, the user is redirected to the specified location.
     For API requests, the context is serialized and returned as JSON.
     """
-
+    
     def __init__(self, url, context={}, **kwargs):
-
+        
         super(SerializeOrRedirect, self).__init__(context, **kwargs)
         self.url = url
-
+    
     def render_response(self, request, response):
         
         if request.is_api:
             res = self.serialize()
         else:
             res = HttpResponseRedirect(self.url)
-
+        
         if hasattr(self, 'extra_headers'):
             for header in self.extra_headers:
                 res[header] = self.extra_headers[header]
-
+        
         return res
 
 class Serialize(DynamicResponse):
@@ -111,11 +116,11 @@ class Serialize(DynamicResponse):
     """
     
     def __init__(self, context={}, **kwargs):
-
+        
         super(Serialize, self).__init__(context, **kwargs)
-
+    
     def render_response(self, request, response):
-
+        
         res = self.serialize()
         
         if hasattr(self, 'extra_headers'):

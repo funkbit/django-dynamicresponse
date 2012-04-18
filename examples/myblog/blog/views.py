@@ -33,6 +33,10 @@ def post(request, post_id=None):
             post = form.save()
             return SerializeOrRedirect(reverse('list_posts'), { 'post': post })
             
+        else:
+            
+            return SerializeOrRender('blog/post.html', { 'post': post }, extra = { 'form': form }, status=CR_INVALID_DATA)    
+        
     else:
         
         form = BlogPostForm(instance=post)

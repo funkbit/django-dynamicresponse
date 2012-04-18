@@ -31,20 +31,14 @@ class DynamicResponseTest(unittest.TestCase):
 
     def testSerializeReturnsJsonResponseWhenStatusIs400AndSettingsSpecifyErrorReporting(self):
         dynRes = DynamicResponse(status=CR_INVALID_DATA)
-        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = False
-        serialize_result = dynRes.serialize()
-
-        self.assertFalse(isinstance(serialize_result, JsonResponse), 'Serialized result should not be a JsonResponse unless the correct setting is set')
-
-        dynRes = DynamicResponse(status=CR_INVALID_DATA)
-        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = True
+        settings.DYNAMICRESPONSE_JSON_FORM_ERRORS = True
         serialize_result = dynRes.serialize()
 
         self.assertTrue(isinstance(serialize_result, JsonResponse), 'Serialized result should be a JsonResponse with correct setting and status: 400')
         self.assertEqual(serialize_result.status_code, 400)
 
     def testJsonResponseWithStatus400ReturnErrorsWhenSettingsSpecifyErrorReporting(self):
-        settings.DYNAMICRESPONSE_INCLUDE_FORM_ERRORS = True
+        settings.DYNAMICRESPONSE_JSON_FORM_ERRORS = True
         simple_form = Form()
         simple_form.is_valid = Mock(return_value=False)
         simple_form.errors[u'SimpleError'] = u'This was a very simple error, shame on you'
@@ -57,22 +51,6 @@ class DynamicResponseTest(unittest.TestCase):
 
         self.assertTrue(isinstance(serialized_result, JsonResponse))
         self.assertEqual(should_equal, serialized_result.content, 'Correct error message is not returned from JsonResponse')
-
-    def testSerializeReturnsHttpResponseWhenStatusIsNot200(self):
-        dynRes = DynamicResponse(status=CR_DELETED)
-        serialize_result = dynRes.serialize()
-
-        self.assertFalse(isinstance(serialize_result, JsonResponse), 'Serialized result should not be an instance of JsonResponse')
-        self.assertTrue(isinstance(serialize_result, HttpResponse), 'Serialized result should be an instance of HttpResponse')
-        self.assertEqual(serialize_result.status_code, 204)
-
-        # second example to confirm
-        dynRes = DynamicResponse(status=CR_CONFIRM)
-        serialize_result = dynRes.serialize()
-
-        self.assertFalse(isinstance(serialize_result, JsonResponse), 'Serialized result should not be an instance of JsonResponse')
-        self.assertTrue(isinstance(serialize_result, HttpResponse), 'Serialized result should be an instance of HttpResponse')
-        self.assertEqual(serialize_result.status_code, 405)
 
     def testFullContextReturnsContextMergedWithExtraContext(self):
         testContext = {"testNum": 5, "word": "bird", "beach": 10}
