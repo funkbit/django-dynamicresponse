@@ -44,13 +44,14 @@ class DynamicFormatMiddleware:
                 elif isinstance(value, dict):
                     encoded_dict[item_key] = value.get('id', value)
                 
-                #null -> None
-                elif value == None:
+                # Keep JavaScript null as Python None
+                elif value is None:
                     encoded_dict[item_key] = None
+                
                 # Other values are used directly
                 else:
                     encoded_dict[item_key] = unicode(value)
-        
+                
         return encoded_dict
         
     def process_request(self, request):
