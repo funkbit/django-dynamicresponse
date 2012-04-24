@@ -28,7 +28,7 @@ class Emitter(object):
     usually the only method you want to use in your
     emitter. See below for examples.
     """
-
+    
     EMITTERS = {}
     RESERVED_FIELDS = set([
         'read',
@@ -41,7 +41,7 @@ class Emitter(object):
         'fields',
         'exclude'
     ])
-
+    
     def __init__(self, payload, typemapper, handler, fields=(), anonymous=True):
         
         self.typemapper = typemapper
@@ -57,14 +57,14 @@ class Emitter(object):
         
         if not handler:
             return {}
-
+        
         ret = dict()
         for field in fields - Emitter.RESERVED_FIELDS:
             t = getattr(handler, str(field), None)
-
+            
             if t and callable(t):
                 ret[field] = t
-
+        
         return ret
     
     def construct(self):
@@ -75,7 +75,7 @@ class Emitter(object):
         
         Returns `dict`.
         """
-
+        
         def _any(thing, fields=()):
             """
             Dispatch, all types are routed through here.
@@ -106,9 +106,9 @@ class Emitter(object):
                 ret = _any(thing.all())
             else:
                 ret = smart_unicode(thing, strings_only=True)
-
+            
             return ret
-
+        
         def _fk(data, field):
             """
             Foreign keys.
@@ -137,7 +137,7 @@ class Emitter(object):
             """
             
             ret = { }
-            handler=None
+            handler = None
             
             # Does the model implement get_serialization_fields() or serialize_fields()?
             # We should only serialize these fields.
@@ -145,20 +145,20 @@ class Emitter(object):
                 fields = set(data.get_serialization_fields())
             if hasattr(data, 'serialize_fields'):
                 fields = set(data.serialize_fields())
-                    
-            # Is the model a user instance?
+            
+            # Is the model a Django user instance?
             # Ensure that only core (non-sensitive fields) are serialized
             if isinstance(data, User):
-                fields = ('id', 'email', 'first_name')
-                
+                fields = getattr(settings, 'DYNAMICRESPONSE_DJANGO_USER_FIELDS', ('id', 'email', 'first_name', 'last_name'))
+            
             # Should we explicitly serialize specific fields?
             if fields:
                 
                 v = lambda f: getattr(data, f.attname)
-
+                
                 get_fields = set(fields)
                 met_fields = self.method_fields(handler, get_fields)
-                           
+                
                 # Serialize normal fields
                 for f in data._meta.local_fields:
                     if f.serialize and not any([ p in met_fields for p in [ f.attname, f.name ]]):
@@ -183,7 +183,7 @@ class Emitter(object):
                     if isinstance(maybe_field, (list, tuple)):
                         model, fields = maybe_field
                         inst = getattr(data, model, None)
-
+                        
                         if inst:
                             if hasattr(inst, 'all'):
                                 ret[model] = _related(inst, fields)
@@ -192,13 +192,13 @@ class Emitter(object):
                                     ret[model] = _any(inst(), fields)
                             else:
                                 ret[model] = _model(inst, fields)
-
+                        
                     elif maybe_field in met_fields:
                         # Overriding normal field which has a "resource method"
                         # so you can alter the contents of certain fields without
                         # using different names.
                         ret[maybe_field] = _any(met_fields[maybe_field](data))
-
+                        
                     else:    
                         maybe = getattr(data, maybe_field, None)
                         if maybe:
@@ -209,20 +209,20 @@ class Emitter(object):
                                 ret[maybe_field] = _any(maybe)
                         else:
                             ret[maybe_field] = _any(maybe)
-
+                
             else:
                 
                 for f in data._meta.fields:
                     if not f.attname.startswith('_'):
                         ret[f.attname] = _any(getattr(data, f.attname))
-
+                
                 fields = dir(data.__class__) + ret.keys()
                 add_ons = [k for k in dir(data) if k not in fields]
-
+                
                 for k in add_ons:
                     if not k.__str__().startswith('_'):
                         ret[k] = _any(getattr(data, k))
-
+                
             return ret
         
         def _qs(data, fields=()):
@@ -231,7 +231,7 @@ class Emitter(object):
             """
             
             return [ _any(v, fields) for v in data ]
-                
+            
         def _list(data, fields=()):
             """
             Lists.
@@ -253,7 +253,7 @@ class Emitter(object):
         for klass, (km, is_anon) in self.typemapper.iteritems():
             if model is km and is_anon is anonymous:
                 return klass
-        
+    
     def render(self):
         """
         This super emitter does not implement `render`,
@@ -265,9 +265,9 @@ class JSONEmitter(Emitter):
     """
     JSON emitter, understands timestamps.
     """
-
+    
     def render(self):
-
+        
         indent = 0
         if settings.DEBUG:
             indent = 4
