@@ -131,7 +131,7 @@ class ViewJSONTests(TestCase):
         
         response = self.client.get(reverse('list_posts'), **self.extra_headers)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['Content-Type'], 'application/json')
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         # Load JSON and check dictionary
         data = simplejson.loads(response.content)
@@ -146,7 +146,7 @@ class ViewJSONTests(TestCase):
         response = self.client.get(reverse('create_post'), **self.extra_headers)
         
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['Content-Type'], 'application/json')
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         data_json = u"""
             {
@@ -158,7 +158,7 @@ class ViewJSONTests(TestCase):
         # Create a new post
         response = self.client.post(reverse('create_post'), data_json, content_type='application/json', **self.extra_headers)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['Content-Type'], 'application/json')
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         # Check the newly created object
         self.assertTrue(BlogPost.objects.filter(id=2).exists())
@@ -175,7 +175,7 @@ class ViewJSONTests(TestCase):
         response = self.client.get(reverse('post', kwargs={'post_id': self.post.id}), **self.extra_headers)
         
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['Content-Type'], 'application/json')
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         # Load JSON and check dictionary
         data = simplejson.loads(response.content)
@@ -202,7 +202,7 @@ class ViewJSONTests(TestCase):
         
         response = self.client.post(reverse('post', kwargs={'post_id': self.post.id}), data_json_valid, content_type='application/json', **self.extra_headers)
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(response['Content-Type'], 'application/json')
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         # Check the newly edited object
         new_post = BlogPost.objects.get(id=self.post.id)

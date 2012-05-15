@@ -48,9 +48,9 @@ class JsonResponseTest(unittest.TestCase):
         self.assertTrue(isinstance(self.modelWithoutSerializeFields, HttpResponse), 'should be an instance of HttpResponse')
 
     def testSetsCorrectMimetype(self):
-        self.assertEqual(self.jsonres['Content-Type'], 'application/json')
-        self.assertEqual(self.modelWithSerializeFields['Content-Type'], 'application/json')
-        self.assertEqual(self.modelWithoutSerializeFields['Content-Type'], 'application/json')
+        self.assertEqual(self.jsonres['Content-Type'], 'application/json; charset=utf-8')
+        self.assertEqual(self.modelWithSerializeFields['Content-Type'], 'application/json; charset=utf-8')
+        self.assertEqual(self.modelWithoutSerializeFields['Content-Type'], 'application/json; charset=utf-8')
 
     def testDictContentConvertsToJson(self):
         result = simplejson.loads(self.jsonres.content)
