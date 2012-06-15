@@ -32,9 +32,36 @@ Add the two middleware classes to `MIDDLEWARE_CLASSES` in your `settings.py`:
 
 `DynamicFormatMiddleware` decodes incoming JSON content into `request.POST`, as well as rendering appropriate responses based on the returned value from your views.
 
+## Settings
+
+These are the available configurable settings, along with their default values:
+
+<table>
+    <tr>
+        <th align="left">Name</th>
+        <th align="left">Default</th>
+        <th align="left">Description</th>
+    </tr>
+    <tr>
+        <td><code>DYNAMICRESPONSE_JSON_FORM_ERRORS</code></td>
+        <td><code>False</code></td>
+        <td>Outputs form errors in JSON</td>
+    </tr>
+    <tr>
+        <td><code>DYNAMICRESPONSE_BASIC_REALM_NAME</code></td>
+        <td><code>'API'</code></td>
+        <td>The name of the Basic Auth realm</td>
+    </tr>
+    <tr>
+        <td><code>DYNAMICRESPONSE_DJANGO_USER_FIELDS</code></td>
+        <td><code>('id', 'email', 'first_name', 'last_name')</code></td>
+        <td>Defines which fields to include when serializing a Django auth User object</td>
+    </tr>
+</table>
+
 ## Tests
 
-Run unit-tests by running <code>python setup.py test</code>
+Run unit tests by running <code>python setup.py test</code>
 
 ## Usage
 
