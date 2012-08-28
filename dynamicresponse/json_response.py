@@ -16,4 +16,4 @@ class JsonResponse(HttpResponse):
         status_code = kwargs.get('status', 200)
         
         # Return response with correct payload/type
-        super(JsonResponse, self).__init__(content, content_type='application/json; charset=%s' % settings.DEFAULT_CHARSET)
+        super(JsonResponse, self).__init__(content, content_type='application/json; charset=%s' % settings.DEFAULT_CHARSET, status=status_code)

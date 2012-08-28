@@ -1,4 +1,5 @@
 # encoding=utf-8
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import simplejson
@@ -189,8 +190,18 @@ class ViewJSONTests(TestCase):
             }
         """
         
+        # Without JSON error output
         response = self.client.post(reverse('post', kwargs={'post_id': self.post.id}), data_json_invalid, content_type='application/json', **self.extra_headers)
+        
         self.assertEquals(response.status_code, 400)
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
+        
+        # With JSON error output
+        settings.DYNAMICRESPONSE_JSON_FORM_ERRORS = True
+        response = self.client.post(reverse('post', kwargs={'post_id': self.post.id}), data_json_invalid, content_type='application/json', **self.extra_headers)
+        
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(response['Content-Type'], 'application/json; charset=utf-8')
         
         # Edit post with valid data
         data_json_valid = u"""
