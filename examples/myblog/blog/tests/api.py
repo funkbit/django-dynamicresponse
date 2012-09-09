@@ -13,7 +13,7 @@ class ApiTest(unittest.TestCase):
     """
     Test basic API middleware operations.
     """
-    
+
     def setUp(self):
         self.api = APIMiddleware()
         self.request = HttpRequest()
@@ -121,39 +121,39 @@ class ApiTest(unittest.TestCase):
         """
         Ensure that invalid basic auth headers are treated correctly.
         """
-        
+
         # Test missing "Basic" opening keyword
         request = HttpRequest()
         request.META['Authorization'] = 'invalid_basic_auth_string'
-        
+
         self.assertFalse(self.api._perform_basic_auth(request))
-        
+
         # Test wrong formatting of credentials
         request = HttpRequest()
         credentials = 'username password'.encode('base64') # Missing colon separator
         request.META['Authorization'] = 'Basic %s' % credentials
-        
+
         self.assertFalse(self.api._perform_basic_auth(request))
 
 class ApiLogInTests(TestCase):
     """
     Test log in of Django users via Basic auth.
     """
-    
+
     fixtures = ['test_data']
-    
+
     def setUp(self):
         self.api = APIMiddleware()
-    
+
     def testBasicAuthentication(self):
         """
         Test that a user can log in with Basic auth.
         """
-        
+
         request = HttpRequest()
         credentials = 'johndoe:foobar'.encode('base64')
         request.META['Authorization'] = 'Basic %s' % credentials
-        
+
         self.assertTrue(self.api._perform_basic_auth(request))
         self.assertTrue(request.user.is_authenticated())
         self.assertEquals(request.user, User.objects.get(id=1))

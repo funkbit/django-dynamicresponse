@@ -7,9 +7,8 @@ class JsonResponse(HttpResponse):
     """
     Provides a JSON response to a client, performing automatic serialization.
     """
-    
     def __init__(self, object=None, **kwargs):
-        
+
         # Perform JSON serialization
         if object:
             emitter = JSONEmitter(object, {}, None)
