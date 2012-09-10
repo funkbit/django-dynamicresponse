@@ -64,7 +64,7 @@ class DynamicResponse(object):
                 return JsonResponse(errors, status=status_code)
         
         # Return blank response for all other status codes
-        return HttpResponse(status=status_code)
+        return JsonResponse(status=status_code)
     
     def full_context(self):
         """
