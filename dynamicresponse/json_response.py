@@ -10,7 +10,7 @@ class JsonResponse(HttpResponse):
     def __init__(self, object=None, **kwargs):
 
         # Perform JSON serialization
-        if object:
+        if object is not None:
             emitter = JSONEmitter(object, {}, None)
             content = emitter.render()
         else:
